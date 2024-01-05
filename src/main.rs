@@ -1,9 +1,9 @@
 use std::env::args;
 use std::fs;
 use std::error::Error;
+use std::convert::TryFrom;
 
-
-enum Instruction {
+enum RawInstruction {
     MoveLeft,
     MoveRight,
     Increment,
@@ -14,7 +14,21 @@ enum Instruction {
     EndLoop,
 }
 
-
+impl RawInstruction{
+    fn from_char(c: char) -> Option<RawInstruction>{
+        match c {
+            '>' => Some(RawInstruction::MoveRight),
+            '<' => Some(RawInstruction::MoveLeft),
+            '+' => Some(RawInstruction::Increment),
+            '-' => Some(RawInstruction::Decrement),
+            '.' => Some(RawInstruction::Input),
+            ',' => Some(RawInstruction::Output),
+            '[' => Some(RawInstruction::BeginLoop),
+            ']' => Some(RawInstruction::EndLoop),
+            _ => None,
+        }
+    }
+}
 
 fn main() -> Result<(), Box<dyn Error>> {
     let file_name = args().nth(1).ok_or("Usage: cargo run -- inputfilename")?;
