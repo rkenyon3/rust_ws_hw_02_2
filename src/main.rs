@@ -1,4 +1,3 @@
-use std::convert::TryFrom;
 use std::env::args;
 use std::error::Error;
 use std::fmt::Display;
@@ -23,8 +22,8 @@ impl RawInstruction {
             '<' => Some(RawInstruction::MoveLeft),
             '+' => Some(RawInstruction::Increment),
             '-' => Some(RawInstruction::Decrement),
-            '.' => Some(RawInstruction::Input),
-            ',' => Some(RawInstruction::Output),
+            ',' => Some(RawInstruction::Input),
+            '.' => Some(RawInstruction::Output),
             '[' => Some(RawInstruction::BeginLoop),
             ']' => Some(RawInstruction::EndLoop),
             _ => None,
@@ -40,11 +39,11 @@ struct InstructionWithPosition {
 }
 
 impl InstructionWithPosition {
-    pub fn new(instruction: RawInstruction, line_number: usize, column: usize) -> Self {
+    pub fn new(instruction: RawInstruction, line_number: usize, character_column: usize) -> Self {
         Self {
-            instruction: instruction,
-            line_number: line_number,
-            character_column: column,
+            instruction,
+            line_number,
+            character_column,
         }
     }
 }
@@ -78,21 +77,17 @@ fn parse_input_file(
     let text = fs::read_to_string(file_name)?;
 
     let mut instructions: Vec<InstructionWithPosition> = Vec::new();
-    let mut line_num: usize = 0;
-    let mut col_num: usize = 0;
-    for line in text.lines() {
-        for c in line.chars() {
-            match RawInstruction::from_char(c) {
+
+    for (line_num, line) in text.lines().enumerate() {
+        for (char_num, character) in line.chars().enumerate() {
+            match RawInstruction::from_char(character) {
                 None => (),
                 Some(instr) => {
-                    let instr_w_pos = InstructionWithPosition::new(instr, line_num, col_num);
+                    let instr_w_pos = InstructionWithPosition::new(instr, line_num, char_num);
                     instructions.push(instr_w_pos);
                 }
             }
-            col_num += 1;
         }
-        line_num += 1;
-        col_num = 0;
     }
 
     Ok(instructions)
