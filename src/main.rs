@@ -3,6 +3,7 @@ use std::env::args;
 use std::error::Error;
 use std::fs;
 
+#[derive(Debug)]
 enum RawInstruction {
     MoveLeft,
     MoveRight,
@@ -30,6 +31,7 @@ impl RawInstruction {
     }
 }
 
+#[derive(Debug)]
 struct InstructionWithPosition {
     instruction: RawInstruction,
     line_number: usize,
@@ -76,6 +78,6 @@ fn main() -> Result<(), Box<dyn Error>> {
     let file_name = args().nth(1).ok_or("Usage: cargo run -- inputfilename")?;
 
     let instructions = parse_input_file(file_name)?;
-    print!("\n");
+    println!("{:?}",instructions);
     Ok(())
 }
