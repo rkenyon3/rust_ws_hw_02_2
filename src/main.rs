@@ -1,6 +1,7 @@
 use std::convert::TryFrom;
 use std::env::args;
 use std::error::Error;
+use std::fmt::Display;
 use std::fs;
 
 #[derive(Debug)]
@@ -48,8 +49,31 @@ impl InstructionWithPosition {
     }
 }
 
+impl Display for InstructionWithPosition {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        let instr_str_rep = match self.instruction {
+            RawInstruction::MoveLeft => "Move Left",
+            RawInstruction::MoveRight => "Move Right",
+            RawInstruction::BeginLoop => "Begin Loop",
+            RawInstruction::EndLoop => "End Loop",
+            RawInstruction::Increment => "Increment",
+            RawInstruction::Decrement => "Decrement",
+            RawInstruction::Input => "Input",
+            RawInstruction::Output => "Output",
+        };
+
+        write!(
+            f,
+            "{}:{}\t{}",
+            self.line_number + 1,
+            self.character_column + 1,
+            instr_str_rep
+        )
+    }
+}
+
 fn parse_input_file(
-    file_name: String,
+    file_name: &String,
 ) -> Result<Vec<InstructionWithPosition>, Box<dyn std::error::Error>> {
     let text = fs::read_to_string(file_name)?;
 
@@ -77,7 +101,9 @@ fn parse_input_file(
 fn main() -> Result<(), Box<dyn Error>> {
     let file_name = args().nth(1).ok_or("Usage: cargo run -- inputfilename")?;
 
-    let instructions = parse_input_file(file_name)?;
-    println!("{:?}",instructions);
+    let instructions = parse_input_file(&file_name)?;
+    for instr in instructions.iter() {
+        println!("{}:{}", &file_name, instr)
+    }
     Ok(())
 }
