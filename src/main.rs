@@ -11,8 +11,8 @@ enum RawInstruction {
     Decrement,
     Input,
     Output,
-    BeginLoop,
-    EndLoop,
+    ConditionalJumpForward,
+    ConditionalJumpBackward,
 }
 
 impl RawInstruction {
@@ -24,8 +24,8 @@ impl RawInstruction {
             '-' => Some(RawInstruction::Decrement),
             ',' => Some(RawInstruction::Input),
             '.' => Some(RawInstruction::Output),
-            '[' => Some(RawInstruction::BeginLoop),
-            ']' => Some(RawInstruction::EndLoop),
+            '[' => Some(RawInstruction::ConditionalJumpForward),
+            ']' => Some(RawInstruction::ConditionalJumpBackward),
             _ => None,
         }
     }
@@ -53,8 +53,8 @@ impl Display for InstructionWithPosition {
         let instr_str_rep = match self.instruction {
             RawInstruction::MoveLeft => "Move Left",
             RawInstruction::MoveRight => "Move Right",
-            RawInstruction::BeginLoop => "Begin Loop",
-            RawInstruction::EndLoop => "End Loop",
+            RawInstruction::ConditionalJumpForward => "Conditional Jump Forward",
+            RawInstruction::ConditionalJumpBackward => "Conditional Jump Backward",
             RawInstruction::Increment => "Increment",
             RawInstruction::Decrement => "Decrement",
             RawInstruction::Input => "Input",
