@@ -1,7 +1,7 @@
-use std::env::args;
-use std::fs;
-use std::error::Error;
 use std::convert::TryFrom;
+use std::env::args;
+use std::error::Error;
+use std::fs;
 
 enum RawInstruction {
     MoveLeft,
@@ -14,8 +14,8 @@ enum RawInstruction {
     EndLoop,
 }
 
-impl RawInstruction{
-    fn from_char(c: char) -> Option<RawInstruction>{
+impl RawInstruction {
+    fn from_char(c: char) -> Option<RawInstruction> {
         match c {
             '>' => Some(RawInstruction::MoveRight),
             '<' => Some(RawInstruction::MoveLeft),
@@ -30,22 +30,52 @@ impl RawInstruction{
     }
 }
 
+struct InstructionWithPosition {
+    instruction: RawInstruction,
+    line_number: usize,
+    character_column: usize,
+}
+
+impl InstructionWithPosition {
+    pub fn new(instruction: RawInstruction, line_number: usize, column: usize) -> Self {
+        Self {
+            instruction: instruction,
+            line_number: line_number,
+            character_column: column,
+        }
+    }
+}
+
+fn parse_input_file(
+    file_name: String,
+) -> Result<Vec<InstructionWithPosition>, Box<dyn std::error::Error>> {
+    let text = fs::read_to_string(file_name)?;
+
+    let mut instructions: Vec<InstructionWithPosition> = Vec::new();
+    let mut line_num: usize = 0;
+    let mut col_num: usize = 0;
+    for line in text.lines() {
+        for c in line.chars() {
+            match RawInstruction::from_char(c) {
+                None => (),
+                Some(instr) => {
+                    let instr_w_pos = InstructionWithPosition::new(instr, line_num, col_num);
+                    instructions.push(instr_w_pos);
+                }
+            }
+            col_num += 1;
+        }
+        line_num += 1;
+        col_num = 0;
+    }
+
+    Ok(instructions)
+}
+
 fn main() -> Result<(), Box<dyn Error>> {
     let file_name = args().nth(1).ok_or("Usage: cargo run -- inputfilename")?;
 
-    let text = fs::read_to_string(file_name)?;
-    
-    let mut program_chars: Vec<char> = Vec::new();
-    for c in text.chars(){
-        if "><+_.,[]".contains(c){
-            program_chars.push(c)
-        }
-    }
-
-    // print the bf program to the screen
-    for c in program_chars.iter() {
-        print!("{c}");
-    }
+    let instructions = parse_input_file(file_name)?;
     print!("\n");
     Ok(())
 }
