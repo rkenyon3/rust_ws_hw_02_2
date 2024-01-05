@@ -2,6 +2,20 @@ use std::env::args;
 use std::fs;
 use std::error::Error;
 
+
+enum Instruction {
+    MoveLeft,
+    MoveRight,
+    Increment,
+    Decrement,
+    Input,
+    Output,
+    BeginLoop,
+    EndLoop,
+}
+
+
+
 fn main() -> Result<(), Box<dyn Error>> {
     let file_name = args().nth(1).ok_or("Usage: cargo run -- inputfilename")?;
 
