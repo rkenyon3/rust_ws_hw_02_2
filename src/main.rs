@@ -12,7 +12,7 @@ enum RawInstruction {
     Input,
     Output,
     ConditionalJumpForward,
-    ConditionalJumpBackward,
+    ConditionalJumpBackward
 }
 
 impl RawInstruction {
@@ -30,6 +30,10 @@ impl RawInstruction {
         }
     }
 }
+
+
+
+
 
 #[derive(Debug)]
 struct InstructionWithPosition {
@@ -51,11 +55,7 @@ impl InstructionWithPosition {
 impl Display for InstructionWithPosition {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         let instr_str_rep = match self.instruction {
-            RawInstruction::MoveLeft => "Move Left",
-            RawInstruction::MoveRight => "Move Right",
-            RawInstruction::ConditionalJumpForward => "Conditional Jump Forward",
-            RawInstruction::ConditionalJumpBackward => "Conditional Jump Backward",
-            RawInstruction::Increment => "Increment",
+            RawInstruction::MoveLeft => "Move Left",            RawInstruction::MoveRight => "Move Right",            RawInstruction::ConditionalJumpForward => "Conditional Jump Forward",            RawInstruction::ConditionalJumpBackward => "Conditional Jump Backward",            RawInstruction::Increment => "Increment",
             RawInstruction::Decrement => "Decrement",
             RawInstruction::Input => "Input",
             RawInstruction::Output => "Output",
